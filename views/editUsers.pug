@@ -1,0 +1,31 @@
+extends layout
+
+block content
+    div(class='users-div')
+        h2 Users Page
+            table
+                tr
+                    th ID
+                    th First Name
+                    th Last Name 
+                    th Email
+                    th Age
+                each user in users
+                    form(class='editForm', method='POST', action='/updateUsers')
+                        tr
+                            td #{user.user_id}
+                                input(name='user_id', type='hidden', value=user.user_id)
+                            td
+                                input(name='first_name', placeholder=user.first_name)
+                            td
+                                input(name='last_name', placeholder=user.last_name)
+                            td
+                                input(name='email_address', type='email', placeholder=user.email_address)
+                            td
+                                input(name='age', type='number', placeholder=user.age)
+                            td.noTable
+                                input(type='submit', name='update', value='Update')
+                            td.noTable
+                                button(type='submit')
+                                    i(class='far fa-trash-alt')
+            a(class='edit-btn', href='/users') Cancel

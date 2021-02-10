@@ -1,7 +1,72 @@
 doctype html
 html
     head
-        title= title
-        link(rel='stylesheet', href='/stylesheets/style.css')
+        title User App
+        link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.7.1/css/all.css", integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr", crossorigin="anonymous")
+        style(type="text/css").
+            h2, p {
+                text-align: center;
+            }
+
+            form {
+                display: flex;
+                justify-content: center;
+            }
+
+            .users-div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            table {
+                border-collapse: collapse;
+                margin: auto;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 5px 10px;
+            }
+            .noTable {
+                border: none;
+            }
+            .edit-btn {
+                font-size: 20px;
+                font-family: Sans-Serif;
+                background-color: white;
+                text-decoration: none;
+                color: inherit;
+                border: 2px solid black;
+                border-radius: 5px;
+                padding: 5px 10px;
+                margin-top: 20px;
+
+                transition: all 200ms;
+            }
+            .edit-btn:hover {
+                background-color: black;
+                color: white;
+            }
+
+            .editForm {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .navBar {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                border-bottom: 3px solid black;
+            }
+            .navBar h1 a {
+                text-decoration: none;
+                color: inherit;
+            }
     body
+        div.navBar
+            h1
+                a(href='/') User App
+            a(href='/users') Users
+            a(href='/form') Add yourself!
         block content
