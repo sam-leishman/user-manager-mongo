@@ -17,4 +17,10 @@ block content
                     td #{user.last_name}
                     td #{user.email_address}
                     td #{user.age}
-        a(class='edit-btn', href='/editUsers') Edit
+                    td.noTable
+                        a(href=`/edit/${user.user_id}`)
+                            button
+                                i(class='far fa-edit')
+                        form(action=`/delete/${user.user_id}`, method='post')
+                            button(type='submit')
+                                i(class='far fa-trash-alt')

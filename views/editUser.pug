@@ -1,0 +1,10 @@
+extends layout 
+
+block content 
+    form(method='POST', action=`/edit/${user.user_id}`)
+        input(name='user_id', type='hidden', value=user.user_id)
+        input(name='first_name', value=user.first_name)
+        input(name='last_name', value=user.last_name)
+        input(name='email_address', value=user.email_address)
+        input(name='age', value=user.age)
+        input(type='submit', value='Update')

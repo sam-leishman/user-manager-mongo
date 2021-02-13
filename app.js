@@ -48,135 +48,54 @@ app.get('/form', (req, res) => {
 })
 
 app.get('/users', (req, res) => {
-    fs.readFile('./tempUsers.json', (err, data) => {
+    users.find({}, (err, data) => { // This callback gets our data from the database
         if (err) throw err;
-        const usersObj = JSON.parse(data);
-
-        res.render('users', { users: usersObj.users })
-    })
-})
-
-app.get('/editUsers', (req, res) => {
-    fs.readFile('./tempUsers.json', (err, data) => {
-        if (err) throw err;
-        const usersObj = JSON.parse(data);
-
-        res.render('editUsers', { users: usersObj.users })
+        res.render('users', { users: data })
     })
 })
 
 app.post('/users', (req, res) => {
-    let user = {};
-    user.user_id = uuid.v4();
-    user.first_name = req.body.first_name;
-    user.last_name = req.body.last_name;
-    user.email_address = req.body.email_address;
-    user.age = req.body.age;
+    let newUser = new users();
+    newUser.user_id = uuid.v4();
+    newUser.first_name = req.body.first_name;
+    newUser.last_name = req.body.last_name;
+    newUser.email_address = req.body.email_address;
+    newUser.age = req.body.age;
 
-    usersFile.users.push(user)
-    const userData = JSON.stringify(usersFile, null, 2)
-    fs.writeFile('./tempUsers.json', userData, (err) => {
-        if (err) throw err;
-    })
-
-    fs.readFile('./tempUsers.json', (err, data) => {
-        if (err) throw err;
-        const usersObj = JSON.parse(data);
-
-        res.render('users', { users: usersObj.users })
+    newUser.save((err) => { // this line saves to the database, then returns you to the home screen in the callback.
+        if (err) throw err
+        res.redirect('/users')
     })
 })
 
-app.post('/updateUsers', (req, res) => {
-    let postUser = {};
-    postUser.user_id = req.body.user_id;
-    postUser.first_name = req.body.first_name;
-    postUser.last_name = req.body.last_name;
-    postUser.email_address = req.body.email_address;
-    postUser.age = req.body.age;
+app.get('/edit/:user_id', (req, res) => {
+    users.findOne({ userID: req.params.userID }, (err, data) => {
+        res.render('editUser', { user: data })
+    })
+})
 
-    if (req.body.update == 'Update') {
-        fs.readFile('./tempUsers.json', 'utf8', (err, data) => {
-            if (err) throw err;
+app.post('/edit/:user_id', (req, res) => {
+    const userToEdit = req.params.user_id;
 
-            const usersObj = JSON.parse(data);
-            const usersArr = usersObj.users;
+    users.findOneAndUpdate({ user_id: userToEdit }, {
+        user_id: req.body.user_id,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email_address: req.body.email_address,
+        age: req.body.age
+    }, (err) => {
+        if (err) throw err;
+        res.redirect('/users')
+    })
+})
 
-            var hasId = usersArr.some((obj) => { // Checks if the POST request has the same id as JSON file
-                return obj.user_id == postUser.user_id;
-            })
-
-            if (hasId) {
-                const updatedData = {
-                    user_id: postUser.user_id,
-                    first_name: postUser.first_name,
-                    last_name: postUser.last_name,
-                    email_address: postUser.email_address,
-                    age: postUser.age,
-                }
-
-                for (let arr of usersArr) {
-                    if (arr.user_id == postUser.user_id) {
-                        let currentIndex = usersArr.indexOf(arr);
-
-                        // checks to see if fields were empty
-                        if (updatedData.first_name == '') {
-                            const firstNameReplacement = arr.first_name;
-                            updatedData.first_name = firstNameReplacement;
-                        }
-                        if (updatedData.last_name == '') {
-                            const lastNameReplacement = arr.last_name;
-                            updatedData.last_name = lastNameReplacement;
-                        }
-                        if (updatedData.email_address == '') {
-                            const emailReplacement = arr.email_address;
-                            updatedData.email_address = emailReplacement;
-                        }
-                        if (updatedData.age == '') {
-                            const ageReplacement = arr.age;
-                            updatedData.age = ageReplacement;
-                        }
-
-                        usersArr.splice(currentIndex, 1, updatedData);
-                    }
-                }
-
-                const newUsers = JSON.stringify(usersArr, null, 2);
-                fs.writeFile('./tempUsers.json', `{"users": ${newUsers}}`, (err) => {
-                    if (err) throw err;
-                })
-            }
-            res.render('users', { users: usersArr })
-        })
-    } else {
-        fs.readFile('./tempUsers.json', 'utf8', (err, data) => {
-            if (err) throw err;
-
-            const usersObj = JSON.parse(data);
-            const usersArr = usersObj.users;
-
-            var hasId = usersArr.some((obj) => { // Checks if the POST request has the same id as JSON file
-                return obj.user_id == postUser.user_id;
-            })
-
-            if (hasId) {
-                for (let arr of usersArr) {
-                    if (arr.user_id == postUser.user_id) {
-                        let currentIndex = usersArr.indexOf(arr);
-
-                        usersArr.splice(currentIndex, 1);
-                    }
-                }
-
-                const newUsers = JSON.stringify(usersArr, null, 2);
-                fs.writeFile('./tempUsers.json', `{"users": ${newUsers}}`, (err) => {
-                    if (err) throw err;
-                })
-            }
-
-            res.render('users', { users: usersArr })
-        })
-    }
+app.post('/delete/:user_id', (req, res) => {
+    const userToDelete = req.params.user_id;
+    users.findOneAndDelete({ user_id: userToDelete }, (err, data) => { 
+        if (err) throw err
+        console.log(`User removed: ${data}`)
+        res.redirect('/users')
+    })
 })
 
 app.listen(3000, () => {
