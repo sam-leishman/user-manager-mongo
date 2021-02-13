@@ -9,32 +9,33 @@ const app = express();
 app.set('views', './views');
 app.set('view engine', 'pug');
 
-app.use(express.urlencoded({extended:false}))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(express.static('public'))
 
-
-
 // mongoose setup
-// const dbConnectionString = 'mongodb://localhost/mtech';
+const dbConnectionString = 'mongodb://localhost/mtech';
 
-// mongoose.connect(dbConnectionString, { useNewUrlParser: true, useUnifiedTopology: true, });
+mongoose.connect(dbConnectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// const udb = mongoose.connection;
+mongoose.set('useFindAndModify', false)
+const database = mongoose.connection;
 
-// udb.on('error', console.error.bind(console, 'connection error:'));
-// udb.once('open', function () {
-//     console.log('db connected');
-// });
+database.once('open', () => {
+    console.log('Database connected');
+});
 
-// const userSchema = new mongoose.Schema({
-//     user_id: String,
-//     first_name: String,
-//     last_name: String,
-//     email_address: String,
-//     age: Number
-// })
+database.on('error', console.error.bind(console, 'connection error:'));
 
-// const Users = mongoose.model('Users', userSchema);
+const userSchema = new mongoose.Schema({
+    user_id: String,
+    first_name: String,
+    last_name: String,
+    email_address: String,
+    age: Number
+})
+
+const users = mongoose.model('Users', userSchema);
 
 
 
@@ -97,14 +98,14 @@ app.post('/updateUsers', (req, res) => {
     if (req.body.update == 'Update') {
         fs.readFile('./tempUsers.json', 'utf8', (err, data) => {
             if (err) throw err;
-    
+
             const usersObj = JSON.parse(data);
             const usersArr = usersObj.users;
-    
+
             var hasId = usersArr.some((obj) => { // Checks if the POST request has the same id as JSON file
                 return obj.user_id == postUser.user_id;
             })
-    
+
             if (hasId) {
                 const updatedData = {
                     user_id: postUser.user_id,
@@ -113,11 +114,11 @@ app.post('/updateUsers', (req, res) => {
                     email_address: postUser.email_address,
                     age: postUser.age,
                 }
-    
+
                 for (let arr of usersArr) {
                     if (arr.user_id == postUser.user_id) {
                         let currentIndex = usersArr.indexOf(arr);
-    
+
                         // checks to see if fields were empty
                         if (updatedData.first_name == '') {
                             const firstNameReplacement = arr.first_name;
@@ -135,11 +136,11 @@ app.post('/updateUsers', (req, res) => {
                             const ageReplacement = arr.age;
                             updatedData.age = ageReplacement;
                         }
-    
+
                         usersArr.splice(currentIndex, 1, updatedData);
                     }
                 }
-    
+
                 const newUsers = JSON.stringify(usersArr, null, 2);
                 fs.writeFile('./tempUsers.json', `{"users": ${newUsers}}`, (err) => {
                     if (err) throw err;
@@ -153,20 +154,20 @@ app.post('/updateUsers', (req, res) => {
 
             const usersObj = JSON.parse(data);
             const usersArr = usersObj.users;
-    
+
             var hasId = usersArr.some((obj) => { // Checks if the POST request has the same id as JSON file
                 return obj.user_id == postUser.user_id;
             })
-    
+
             if (hasId) {
                 for (let arr of usersArr) {
                     if (arr.user_id == postUser.user_id) {
                         let currentIndex = usersArr.indexOf(arr);
-    
+
                         usersArr.splice(currentIndex, 1);
                     }
                 }
-    
+
                 const newUsers = JSON.stringify(usersArr, null, 2);
                 fs.writeFile('./tempUsers.json', `{"users": ${newUsers}}`, (err) => {
                     if (err) throw err;
