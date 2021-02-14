@@ -1,8 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const uuid = require('uuid');
-const fs = require('fs');
-const usersFile = require('./tempUsers.json');
 
 const app = express();
 
