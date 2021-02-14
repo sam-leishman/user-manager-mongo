@@ -69,7 +69,7 @@ app.post('/users', (req, res) => {
 })
 
 app.get('/edit/:user_id', (req, res) => {
-    users.findOne({ userID: req.params.userID }, (err, data) => {
+    users.findOne({ user_id: req.params.user_id }, (err, data) => {
         res.render('editUser', { user: data })
     })
 })
@@ -95,6 +95,41 @@ app.post('/delete/:user_id', (req, res) => {
         if (err) throw err
         console.log(`User removed: ${data}`)
         res.redirect('/users')
+    })
+})
+
+app.post('/filter', (req, res) => {
+    const filter = req.body.filter;
+
+    if (filter == 'firstFilter') {
+        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {first_name: 1} }, (err, data) => {
+            if (err) throw err;
+            res.render('users', { users: data })
+        })
+    }
+    if (filter == 'lastFilter') {
+        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {last_name: 1} }, (err, data) => {
+            if (err) throw err;
+            res.render('users', { users: data })
+        })
+    }
+    if (filter == 'emailFilter') {
+        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {email_address: 1} }, (err, data) => {
+            if (err) throw err;
+            res.render('users', { users: data })
+        })
+    }
+    if (filter == 'ageFilter') {
+        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {age: 1} }, (err, data) => {
+            if (err) throw err;
+            res.render('users', { users: data })
+        })
+    }
+})
+
+app.post('/search', (req, res) => {
+    users.find({ first_name: req.body.search }, (err, data) => {
+        res.render('users', { users: data })
     })
 })
 

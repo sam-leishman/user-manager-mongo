@@ -2,14 +2,26 @@ extends layout
 
 block content
     div(class='users-div')
-        h2 Users Page
+        h2 Users
+        form(action='/search', method='post')
+            input(name='search', placeholder='Search by first name')
+            input(type='submit')
         table
             tr
-                th ID
-                th First Name 
-                th Last Name 
-                th Email
-                th Age
+                form(action='/filter', method='post')
+                    th ID
+                    th First Name 
+                        button(class='btn', type='submit', name='filter', value='firstFilter')
+                            i(class="fas fa-caret-down")
+                    th Last Name 
+                        button(class='btn', type='submit', name='filter', value='lastFilter')
+                            i(class="fas fa-caret-down")
+                    th Email 
+                        button(class='btn', type='submit', name='filter', value='emailFilter')
+                            i(class="fas fa-caret-down")
+                    th Age 
+                        button(class='btn', type='submit', name='filter', value='ageFilter')
+                            i(class="fas fa-caret-down")
             each user in users
                 tr.tableRow
                     td #{user.user_id}
