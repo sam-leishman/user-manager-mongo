@@ -101,29 +101,56 @@ app.post('/delete/:user_id', (req, res) => {
 app.post('/filter', (req, res) => {
     const filter = req.body.filter;
 
-    if (filter == 'firstFilter') {
-        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {first_name: 1} }, (err, data) => {
-            if (err) throw err;
-            res.render('users', { users: data })
-        })
-    }
-    if (filter == 'lastFilter') {
-        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {last_name: 1} }, (err, data) => {
-            if (err) throw err;
-            res.render('users', { users: data })
-        })
-    }
-    if (filter == 'emailFilter') {
-        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {email_address: 1} }, (err, data) => {
-            if (err) throw err;
-            res.render('users', { users: data })
-        })
-    }
-    if (filter == 'ageFilter') {
-        users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {age: 1} }, (err, data) => {
-            if (err) throw err;
-            res.render('users', { users: data })
-        })
+    if (req.body.filterCheck == 'on') {
+        if (filter == 'firstFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {first_name: -1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+        if (filter == 'lastFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {last_name: -1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+        if (filter == 'emailFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {email_address: -1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+        if (filter == 'ageFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {age: -1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+    } else {
+        if (filter == 'firstFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {first_name: 1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+        if (filter == 'lastFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {last_name: 1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+        if (filter == 'emailFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {email_address: 1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
+        if (filter == 'ageFilter') {
+            users.find({}, ['user_id', 'first_name', 'last_name', 'email_address', 'age'], { sort: {age: 1} }, (err, data) => {
+                if (err) throw err;
+                res.render('users', { users: data })
+            })
+        }
     }
 })
 

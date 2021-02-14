@@ -22,6 +22,9 @@ block content
                     th Age 
                         button(class='btn', type='submit', name='filter', value='ageFilter')
                             i(class="fas fa-caret-down")
+                    th.noTable 
+                        input(id='filterCheck', name='filterCheck', type='checkbox')
+                        label(for='filterCheck') Filter Descending
             each user in users
                 tr.tableRow
                     td #{user.user_id}
